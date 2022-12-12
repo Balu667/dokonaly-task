@@ -1,0 +1,38 @@
+.auth-section{
+    display: grid;
+    place-items: center;
+    min-height: 100vh; 
+}
+
+form{
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 50px;
+}
+
+h2{
+    margin-bottom: 10px;
+}
+
+input,label{
+    font-size: 16px;
+}
+
+input{
+    padding: 5px;
+}
+
+label{
+    margin-top: 5px;
+}
+
+button{
+    margin: 10px 0;
+    font-size: 16px;
+    padding: 5px;
+}
+.flex-container{
+    display: flex;
+    /* justify-content: space-between; */
+}
