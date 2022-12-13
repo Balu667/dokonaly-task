@@ -22,6 +22,8 @@ app.use((req, res, next) => {
 
 app.use("/api", userRoutes);
 
+
+
 mongoose.connect("mongodb+srv://mahendra:zI4d6oKYQip1f062@cluster0.wlu0ovk.mongodb.net/users?retryWrites=true&w=majority").then(() => {
     app.listen(4000,() => {
         console.log("your app is listing on port 4000")
