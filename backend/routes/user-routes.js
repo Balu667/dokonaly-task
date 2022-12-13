@@ -4,7 +4,7 @@ const { check } = require("express-validator");
 
 const router = express.Router();
 
-router.post('/signup',  [check("email").isEmail(), check("password").isLength({ min: 5 })],userControllers.signUp);
+router.post('/signup',  [check("email").isEmail(), check("password").isLength({ min: 5 }), check("name").exists(),check("userName").exists()],userControllers.signUp);
 
 router.post('/login', [check("email").isEmail(), check("password").isLength({ min: 5 })], userControllers.logIn);
 

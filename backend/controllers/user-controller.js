@@ -3,9 +3,10 @@ const HttpError = require("../models/http-error");
 const User = require("../models/users");
 
 const signUp = async (req, res, next) => {
+  var status = 0;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(422).send({error:"Invalid Inputs and does not match our pattern, Please check"})
+    return res.status(422).send({error:"Invalid Inputs and does not match our pattern, Please check",'status': status})
     // return next(
     //   new HttpError(
     //     "Invalid Inputs and does not match our pattern, Please check",
@@ -19,14 +20,14 @@ const signUp = async (req, res, next) => {
     hasUser = await User.findOne({ email: email });
   } catch (err) {
     console.log(err);
-    return res.status(500).json({error:"Signup failed, Please try again"})
+    return res.status(500).json({error:"Signup failed, Please try again",'status': status})
     // return next(new HttpError("Signup failed, Please try again", 500));
   }
 
   if (hasUser) {
     return res
       .status(422)
-      .send({ error: "Email is already registered, Please Login" });
+      .send({ error: "Email is already registered, Please Login", 'status': status });
     // const error = new HttpError(
     //   "Email is already registered, Please Login",
     //   422
@@ -45,20 +46,23 @@ const signUp = async (req, res, next) => {
     await newUser.save();
   } catch (err) {
     console.log(err);
-    return res.status(500).json({error:"Signup failed, Please try again"})
+    return res.status(500).json({error:"Signup failed, Please try again",'status': status})
     // return next(new HttpError("Signup failed, Please try again", 500));
   }
+  status = 1
 
-  res.status(201).json({ email: newUser.email, password: newUser.password });
+  res.status(201).json({ data: {email: newUser.email, password: newUser.password},'status': status });
 };
 
 const logIn = async (req, res, next) => {
   const errors = validationResult(req);
+  var status = 0;
   if (!errors.isEmpty()) {
     return res
       .status(422)
       .send({
         error: "Invalid Inputs and does not match our pattern, Please check",
+        'status': status
       });
     // return next(
     //   new HttpError(
@@ -75,7 +79,7 @@ const logIn = async (req, res, next) => {
     identifyUser = await User.findOne({ email: email });
   } catch (err) {
     console.log(err);
-    return res.status(500).json({error:"login failed, Please try again"})
+    return res.status(500).json({error:"login failed, Please try again", 'status': status})
     // return next(
     //   new HttpError("login failed, something went wrong Please check")
     // );
@@ -84,13 +88,28 @@ const logIn = async (req, res, next) => {
   if (!identifyUser) {
     return res
       .status(403)
-      .send({ error: "Email is not registered, Plese register first" });
+      .send({ error: "Email is not registered, Plese register first", 'status': status });
     // return next(
     //   new HttpError("Email is not registered, Plese register first", 403)
     // );
   }
 
-  res.json({ user: identifyUser });
+  if (identifyUser.password === password) {
+    status = 1;
+    res.json({ data: {identifyUser}, 'status': status } );
+  } else {
+    status = 0;
+    return res.status(401).json({error:"password and username mismatch, please enter correct creditials", 'status': status})
+    // return next(
+    //   new HttpError(
+    //     "password and username mismatch, please enter correct creditials"
+    //   )
+    // );
+  }
+
+
+
+  // res.json({ data: {identifyUser, 'status': 1} });
 };
 
 exports.logIn = logIn;
