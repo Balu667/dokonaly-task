@@ -4,15 +4,21 @@ import { logInHandler } from "./AuthSlice";
 import { useNavigate } from "react-router";
 import "./Auth.css";
 
+
 export const Auth = () => {
   const [name, setName] = useState("");
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(false);
+  const [isValid,setIsValid] = useState(true);
+
+
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -25,42 +31,40 @@ export const Auth = () => {
     if (isLogin) {
       let userData = { email, password };
       try {
-        dispatch(logInHandler(userData));
+        dispatch(logInHandler(userData)).unwrap().then((data) => {
+        navigate("/dashboard")
+        console.log(data,"data in login")
+       }).catch((err) => {
+        alert(err.error)
+       });
+       
       } catch (err) {
         console.log(err);
       }
-      navigate("/dashboard");
 
-      // try{
-      //   await dispatch(logIn(JSON.stringify(userData)))
-      // }catch(err){
-      //     console.log(err)
-      // }
-      //   const response = await fetch("//localhost:4000/api/login", {
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify(userData),
-      //   });
-      //   const data = await response.json();
-      //   if (data.error) {
-      //     alert(data.error);
-      //   }
-      //   console.log(data);
     } else {
-      const response = await fetch("//localhost:4000/api/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userDetails),
-      });
-      const data = await response.json();
-      if (data.error) {
-        alert(data.error);
+
+    
+      try{
+        const response = await fetch("//localhost:4000/api/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userDetails),
+        });
+        const data = await response.json();
+        
+        if (data.error) {
+          alert(data.error);
+        }else{
+          setIsLogin(!isLogin)
+        }
+        
+      }catch(err){
+        console.log(err)
       }
-      console.log(data);
+     
     }
     console.log(userDetails, "user details");
     setName("");
@@ -69,22 +73,27 @@ export const Auth = () => {
     setUserName("");
   };
 
+
+
   const switchModeHandler = () => {
     setIsLogin(!isLogin);
   };
-  console.log(!email && !password);
+  
   return (
     <div className="auth-section">
       <form onSubmit={submitHandler}>
         <h2>{isLogin ? "Login to App" : "Register to App"}</h2>
         {!isLogin && <label>Fullname</label>}
-        {!isLogin && (
+        {!isLogin && 
+        
           <input
             onChange={(e) => setName(e.target.value)}
             type="text"
             value={name}
           />
-        )}
+
+       
+        }
         {!isLogin && <label>Username</label>}
         {!isLogin && (
           <input
@@ -105,7 +114,7 @@ export const Auth = () => {
           onChange={(e) => setPassword(e.target.value)}
           value={password}
         />
-        <button type="submit" disabled={!email || !password}>
+        <button type="submit" disabled={!isValid}>
           Submit
         </button>
         <div className="flex-container">

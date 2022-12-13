@@ -12,9 +12,11 @@ export const logInHandler = createAsyncThunk(
   async (userData, thunkAPI) => {
     try {
       const res = await axios.post("//localhost:4000/api/login", userData);
+      
       return res.data;
     } catch (err) {
-      return thunkAPI.rejectWithValue({ error: err.message });
+     
+      return thunkAPI.rejectWithValue({ error: err.response.data.error });  
     }
   }
 );
@@ -24,11 +26,10 @@ const authSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: {
-    [logInHandler.pending]: (state, action) => {
-      state.status = "pending";
-    },
+  
     [logInHandler.fulfilled]: (state, action) => {
       state.user = action.payload;
+      state.error = null;
     },
     [logInHandler.rejected]: (state, action) => {
       state.error = action.payload;

@@ -1,0 +1,25 @@
+{
+  "name": "dokonaly-task",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "frontend": "cd frontend && npm start",
+    "backend": "cd backend && node app.js",
+    "dev": "concurrently -n 'backend,frontend' -c 'red,green'  \"npm run backend\" \"npm run frontend\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Balu667/dokonaly-task.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Balu667/dokonaly-task/issues"
+  },
+  "homepage": "https://github.com/Balu667/dokonaly-task#readme",
+  "dependencies": {
+    "concurrently": "^7.6.0"
+  }
+}

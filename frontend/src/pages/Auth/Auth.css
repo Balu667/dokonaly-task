@@ -9,6 +9,8 @@ form{
     display: flex;
     flex-direction: column;
     padding: 20px 50px;
+    border-radius: 5px;
+    min-width: 350px;
 }
 
 h2{

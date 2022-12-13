@@ -96,7 +96,8 @@ const logIn = async (req, res, next) => {
 
   if (identifyUser.password === password) {
     status = 1;
-    res.json({ data: {identifyUser}, 'status': status } );
+    let user = identifyUser.toObject({getters: true})
+    res.json({ data: {...user}, 'status': status } );
   } else {
     status = 0;
     return res.status(401).json({error:"password and username mismatch, please enter correct creditials", 'status': status})
